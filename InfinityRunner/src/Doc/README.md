@@ -5,6 +5,7 @@ Bienvenido a **InfinityRunner**, un juego arcade de plataformas infinitas donde 
 ## Descripción del Juego
 
 InfinityRunner es un juego de carreras infinitas basado en saltos donde:
+
 - 🎮 Controlas un personaje que salta evitando obstáculos
 - 📊 Acumulas puntos por cada obstáculo evitado
 - ⚡ La dificultad aumenta progresivamente cada 3 obstáculos
@@ -29,10 +30,10 @@ InfinityRunner es un juego de carreras infinitas basado en saltos donde:
 
 ## Controles
 
-| Tecla | Acción |
-|-------|--------|
-| SPACE | Saltar |
-| ESC | Salir (futuro) |
+| Tecla | Acción         |
+| ----- | -------------- |
+| SPACE | Saltar         |
+| ESC   | Salir (futuro) |
 
 ## Diagrama de Clases
 
@@ -217,24 +218,26 @@ java main.Main
 
 ## Estadísticas del Código
 
-| Métrica | Valor |
-|---------|-------|
-| Clases | 6 |
-| Métodos | 15+ |
-| Líneas de Código | ~450 |
-| Packages | 4 (main, model, controller, view) |
-| FPS | 50 |
-| Velocidad Base | 8 píxeles/frame |
-| Incremento cada 3 puntos | +1 píxel/frame |
+| Métrica                  | Valor                             |
+| ------------------------ | --------------------------------- |
+| Clases                   | 6                                 |
+| Métodos                  | 15+                               |
+| Líneas de Código         | ~450                              |
+| Packages                 | 4 (main, model, controller, view) |
+| FPS                      | 50                                |
+| Velocidad Base           | 8 píxeles/frame                   |
+| Incremento cada 3 puntos | +1 píxel/frame                    |
 
 ## Mecánicas de Juego
 
 ### Movimiento
+
 - El personaje se encuentra fijo en X = 50-90
 - Salta verticalmente al presionar SPACE (altura: 150px)
 - Cae por gravedad simula (5px por frame)
 
 ### Obstáculos
+
 - Aparecen en X = 800 (derecha)
 - Se mueven hacia X = 0 (izquierda)
 - Velocidad inicial: 8 píxeles/frame
@@ -242,10 +245,12 @@ java main.Main
 - Desaparecen en X < -20
 
 ### Colisiones
+
 - Contacto con obstáculo = Game Over
 - Se detectan por rango: X (50-90) y Y (>300)
 
 ### Puntuación
+
 - +1 punto por cada obstáculo completamente evitado
 - Se muestra en tiempo real
 - Se reinicia en cada partida
