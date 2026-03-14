@@ -68,10 +68,5 @@ public class PanelJuego extends JPanel {
         g.setFont(new Font("Arial", Font.BOLD, 25));
         g.setColor(Color.BLUE);
         g.drawString("Puntos: " + modelo.puntuacion, 20, 40);
-        
-        // Indicador de velocidad
-        g.setFont(new Font("Arial", Font.PLAIN, 14));
-        int vel = 8 + (modelo.puntuacion / 10) * 2;
-        g.drawString("Velocidad: " + vel, 20, 65);
     }
 }

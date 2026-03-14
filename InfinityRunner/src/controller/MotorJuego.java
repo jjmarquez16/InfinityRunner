@@ -37,10 +37,15 @@ public class MotorJuego implements ActionListener, KeyListener {
             return;
 
         // Lógica de movimiento
-        modelo.obstaculoX -= 8;
+        modelo.obstaculoX -= modelo.velocidadObstaculo;
         if (modelo.obstaculoX < -20) {
             modelo.obstaculoX = 800;
             modelo.puntuacion++;
+            
+            // Aumentar velocidad cada 3 obstáculos
+            if (modelo.puntuacion % 3 == 0) {
+                modelo.velocidadObstaculo++;
+            }
         }
 
         // Gravedad simple
