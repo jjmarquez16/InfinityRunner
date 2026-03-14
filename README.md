@@ -6,18 +6,18 @@ Bienvenido a **InfinityRunner**, un juego arcade de plataformas infinitas donde 
 
 InfinityRunner es un juego de carreras infinitas basado en saltos donde:
 
-- 🎮 Controlas un personaje que salta evitando obstáculos
-- 📊 Acumulas puntos por cada obstáculo evitado
-- ⚡ La dificultad aumenta progresivamente cada 3 obstáculos
-- 🏆 Comparte tus mejores puntuaciones
+- Controlas un personaje que salta evitando obstáculos
+- Acumulas puntos por cada obstáculo evitado
+- La dificultad aumenta progresivamente cada 3 obstáculos
+- Comparte tus mejores puntuaciones
 
 ## Características
 
-- ✅ Mecánica simple y adictiva (solo usa SPACE)
-- ✅ Dificultad progresiva automática
-- ✅ Interfaz gráfica intuitiva con Swing
-- ✅ Sistema de puntuación en tiempo real
-- ✅ Arquitectura MVC bien estructurada
+- Mecánica simple y adictiva (solo usa SPACE)
+- Dificultad progresiva automática
+- Interfaz gráfica intuitiva con Swing
+- Sistema de puntuación en tiempo real
+- Arquitectura MVC bien estructurada
 
 ## Cómo Jugar
 
@@ -279,6 +279,260 @@ Este proyecto es de código abierto para propósitos educativos.
 
 Development Team - InfinityRunner
 Marzo 2026
+
+---
+
+## Ingeniería Inversa del Sistema
+
+Esta sección describe el análisis técnico y la arquitectura interna del juego InfinityRunner.
+
+### Arquitectura General del Sistema
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    FLUJO DE CONTROL GENERAL                      │
+└─────────────────────────────────────────────────────────────────┘
+
+Main.main()
+    ↓
+Crea instancias:
+    ├─ Modelo modelo = new Modelo()
+    ├─ VentanaPrincipal vista = new VentanaPrincipal()
+    └─ MotorJuego motor = new MotorJuego(modelo, vista)
+        ↓
+    MotorJuego inicializa:
+        ├─ Timer (20ms) → actionPerformed()
+        ├─ KeyListener → keyPressed(KeyEvent)
+        └─ ActionListener → botones del menú
+```
+
+### Ciclo Principal del Juego
+
+```
+CICLO DEL TIMER (cada 20ms = 50 FPS)
+    │
+    └─ Si modelo.enJuego == true:
+        ├─ 1. Mover obstáculos
+        │      modelo.obstaculoX -= modelo.velocidadObstaculo
+        │
+        ├─ 2. Aplicar gravedad
+        │      if (personajeY < 300) personajeY += 5
+        │
+        ├─ 3. Verificar colisiones
+        │      if (obstaculoX < 90 && obstaculoX > 50 && personajeY + 50 > 300)
+        │         finalizarJuego()
+        │
+        ├─ 4. Sumar puntos
+        │      if (obstaculoX < -20) {
+        │         obstaculoX = 800
+        │         puntuacion++
+        │      }
+        │
+        ├─ 5. Aumentar dificultad
+        │      if (puntuacion % 3 == 0)
+        │         velocidadObstaculo++
+        │
+        └─ 6. Redibujar pantalla
+               vista.panelJuego.actualizar(modelo)
+               → paintComponent() dibuja todo
+```
+
+### Estructura de Datos Clave (Modelo.java)
+
+```java
+public class Modelo {
+    // ESTADO DEL JUEGO
+    public boolean enJuego;                    // Flag: juego activo
+    public String nombreJugador;               // Nombre ingresado
+
+    // POSICIONES Y MOVIMIENTO
+    public int personajeY;                     // Y del personaje (0-500)
+    public int obstaculoX;                     // X del obstáculo (0-800+)
+    public int obstaculoY = 300;               // Y fijo del obstáculo
+    public int velocidadObstaculo = 8;         // Píxeles/frame
+
+    // OBSTÁCULO DEL CIELO
+    public boolean obstaculoCieloActivo;       // Flag: activo
+    public int obstaculoCieloX;                // X del obstáculo cielo
+    public int obstaculoCieloY = 140;          // Y fijo del obstáculo cielo
+
+    // PUNTUACIÓN
+    public int puntuacion;                     // Puntos acumulados
+
+    // MÉTODOS
+    public void reiniciar() {
+        // Resetea todos los valores al estado inicial
+    }
+}
+```
+
+### Flujo de Eventos de Entrada
+
+```
+KeyEvent (Usuario presiona SPACE)
+    ↓
+MotorJuego.keyPressed(KeyEvent e)
+    ↓
+if (e.getKeyCode() == KeyEvent.VK_SPACE &&
+    modelo.personajeY >= 300)
+    ├─ modelo.personajeY -= 150  // Salta inmediatamente
+    └─ En el siguiente ciclo, la gravedad lo bajará gradualmente
+```
+
+### Detección de Colisiones - Análisis Matemático
+
+```
+COLISIÓN CON OBSTÁCULO (SUELO):
+    ├─ Condición: obstaculoX < 90 &&
+    │             obstaculoX > 50 &&
+    │             (personajeY + 50) > 300
+    │
+    ├─ Explicación:
+    │   • X del personaje: 50-110 (ancho 60px)
+    │   • X del obstáculo: 0-800 (ancho 30px)
+    │   • Colisión si su rango X se superpone: [50,90]
+    │   • Y del personaje: 0-500
+    │   • Colisión si Y+altura > 300 (zona del suelo)
+    │
+    └─ Resultado: finalizarJuego()
+
+COLISIÓN CON OBSTÁCULO (CIELO):
+    ├─ Condición: obstaculoCieloX < 90 &&
+    │             obstaculoCieloX > 50 &&
+    │             personajeY < 140
+    │
+    ├─ Explicación:
+    │   • Mismo chequeo X que arriba
+    │   • Si personaje está muy arriba (Y < 140)
+    │   • El obstáculo del cielo está en Y = 140 (altura 35px)
+    │
+    └─ Resultado: finalizarJuego()
+```
+
+### Sistema de Puntuación y Dificultad
+
+```
+EVOLUCIÓN A LO LARGO DEL JUEGO:
+
+Punto 0:   velocidadObstaculo = 8 p/f
+Punto 3:   velocidadObstaculo = 9 p/f (aumento)
+Punto 5:   obstaculoCieloActivo = true (aparece obstáculo del cielo)
+Punto 6:   velocidadObstaculo = 10 p/f
+Punto 9:   velocidadObstaculo = 11 p/f
+Punto 10:  obstaculoCieloActivo = true (nuevo ciclo)
+...
+
+FÓRMULA: velocidadObstaculo = 8 + floor(puntuacion / 3)
+         obstaculoCieloActivo = true cada 5 puntos
+```
+
+### Transformación de Estados
+
+```
+MÁQUINA DE ESTADOS:
+
+[MENÚ]
+  │ clicks btnJugar
+  ↓
+[JUEGO]
+  │ timer corre
+  │ salta personaje
+  │ se mueven obstáculos
+  │ detecta colisión
+  ↓
+[RESULTADOS]
+  │ muestra score
+  │ clicks btnReiniciar ──→ vuelve a [JUEGO]
+  │ clicks btnVolverAlMenu ──→ vuelve a [MENÚ]
+```
+
+### Gestión de Memoria
+
+```
+OBJETOS PRINCIPALES EN MEMORIA:
+
+1. Main
+   └─ Modelo (1 instancia)
+   └─ VentanaPrincipal (1 instancia)
+      ├─ PanelMenu (1 instancia)
+      │  ├─ JButton btnJugar
+      │  └─ JTextField txtNombre
+      ├─ PanelJuego (1 instancia)
+      │  ├─ PanelCanvasJuego (1 instancia interno)
+      │  ├─ BufferedImage imgProtagonista
+      │  ├─ BufferedImage imgFondo
+      │  └─ JLabel lblPuntuacion
+      └─ PanelResultados (1 instancia)
+         ├─ JLabel lblNombreJugador
+         ├─ JLabel lblPuntuacion
+         ├─ JButton btnReiniciar
+         └─ JButton btnVolverAlMenu
+   └─ MotorJuego (1 instancia)
+      └─ Timer (1 instancia)
+```
+
+### Comunicación Entre Componentes
+
+```
+PATRÓN OBSERVADOR/MVC:
+
+Modelo (datos)
+    ↑
+    │ modifica
+    │
+MotorJuego (controlador)
+    │
+    └─→ Vista (VentanaPrincipal)
+        ├─ PanelMenu (muestra entrada)
+        ├─ PanelJuego (muestra estado)
+        └─ PanelResultados (muestra resultados)
+
+FLUJO:
+1. Usuario input → MotorJuego.keyPressed()
+2. MotorJuego modifica Modelo
+3. MotorJuego llama vista.panelJuego.actualizar(modelo)
+4. Panel redibuja con new Modelo datos
+```
+
+### Optimizaciones Realizadas
+
+| Aspecto    | Técnica                 | Beneficio          |
+| ---------- | ----------------------- | ------------------ |
+| Rendering  | Doble buffering (Swing) | Sin parpadeos      |
+| FPS        | Timer de 20ms           | 50 FPS constantes  |
+| Física     | Valores enteros         | Cálculos rápidos   |
+| Colisiones | Rango boxes             | O(1) por frame     |
+| Memoria    | CardLayout              | Solo panel visible |
+| Graphics   | Graphics2D antialiasing | Mejor visual       |
+
+### Puntos de Extensión Futuros
+
+```
+1. Sistema de Sonido
+   ├─ SoundManager.java
+   ├─ Efectos: salto, colisión, punto
+   └─ Música de fondo
+
+2. Sistema de Récords
+   ├─ FileManager.java (JSON/Properties)
+   ├─ Persistencia en disco
+   └─ Leaderboard
+
+3. Power-ups
+   ├─ PowerUp.java (clase)
+   ├─ Tipos: escudo, ralentización, puntos
+   └─ Detección de colisión adicional
+
+4. Animaciones
+   ├─ AnimationManager.java
+   ├─ Sprites del personaje
+   └─ Efectos visuales (polvillo, etc)
+
+5. Modos de Juego
+   ├─ Modo clásico
+   ├─ Modo tiempo limitado
+   └─ Modo desafío
+```
 
 ---
 
