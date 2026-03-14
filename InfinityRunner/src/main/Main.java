@@ -9,7 +9,6 @@ import controller.MotorJuego;
  * Punto de entrada de la aplicación que inicializa el modelo, la vista y el controlador.
  * 
  * @author Jose Ramon Neira Vega
- * @version 1.0
  */
 public class Main {
     /**
