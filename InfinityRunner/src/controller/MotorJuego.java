@@ -61,9 +61,8 @@ public class MotorJuego implements ActionListener, KeyListener {
      * Obtiene el nombre del jugador, reinicia el modelo y muestra el panel de juego.
      */
     private void iniciarJuego() {
-        modelo.nombreJugador = vista.panelMenu.txtNombre.getText();
-        if (modelo.nombreJugador.isEmpty())
-            modelo.nombreJugador = "Jugador";
+        String nombre = vista.panelMenu.txtNombre.getText().trim();
+        modelo.setNombreJugador(nombre.isEmpty() ? "Jugador" : nombre);
         
         modelo.reiniciar();
         juegoEnProgreso = true;
@@ -101,7 +100,7 @@ public class MotorJuego implements ActionListener, KeyListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!modelo.enJuego || !juegoEnProgreso)
+        if (!modelo.isEnJuego() || !juegoEnProgreso)
             return;
 
         // Actualizar lógica del juego
@@ -118,28 +117,29 @@ public class MotorJuego implements ActionListener, KeyListener {
      */
     private void actualizarObstaculos() {
         // Lógica de movimiento del obstáculo normal
-        modelo.obstaculoX -= modelo.velocidadObstaculo;
-        if (modelo.obstaculoX < -20) {
-            modelo.obstaculoX = 800;
-            modelo.puntuacion++;
+        modelo.setObstaculoX(modelo.getObstaculoX() - modelo.getVelocidadObstaculo());
+        
+        if (modelo.getObstaculoX() < -20) {
+            modelo.setObstaculoX(GameConstants.OBSTACLE_INITIAL_X);
+            modelo.incrementarPuntuacion();
             
-            // Aparece un obstáculo del cielo cada 5 obstáculos normales
-            if (modelo.puntuacion % 5 == 0) {
-                modelo.obstaculoCieloActivo = true;
-                modelo.obstaculoCieloX = 800;
+            // Aparece obstáculo del cielo cada N puntos
+            if (modelo.debeActivarObstaculoCielo()) {
+                modelo.setObstaculoCieloActivo(true);
+                modelo.setObstaculoCieloX(GameConstants.OBSTACLE_INITIAL_X);
             }
             
-            // Aumentar velocidad cada 3 obstáculos
-            if (modelo.puntuacion % 3 == 0) {
-                modelo.velocidadObstaculo++;
+            // Aumentar velocidad cada N puntos
+            if (modelo.debeIncrementarVelocidad()) {
+                modelo.incrementarVelocidad();
             }
         }
 
         // Lógica de movimiento del obstáculo del cielo
-        if (modelo.obstaculoCieloActivo) {
-            modelo.obstaculoCieloX -= modelo.velocidadObstaculo;
-            if (modelo.obstaculoCieloX < -20) {
-                modelo.obstaculoCieloActivo = false;
+        if (modelo.isObstaculoCieloActivo()) {
+            modelo.setObstaculoCieloX(modelo.getObstaculoCieloX() - modelo.getVelocidadObstaculo());
+            if (modelo.getObstaculoCieloX() < -20) {
+                modelo.setObstaculoCieloActivo(false);
             }
         }
     }
@@ -148,8 +148,8 @@ public class MotorJuego implements ActionListener, KeyListener {
      * Actualiza la gravedad del personaje.
      */
     private void actualizarGravedad() {
-        if (modelo.personajeY < 300)
-            modelo.personajeY += 5;
+        if (modelo.getPersonajeY() < GameConstants.COLLISION_GROUND_Y)
+            modelo.setPersonajeY(modelo.getPersonajeY() + GameConstants.GRAVITY);
     }
 
     /**
@@ -157,15 +157,18 @@ public class MotorJuego implements ActionListener, KeyListener {
      */
     private void verificarColisiones() {
         // Colisión con obstáculo normal (abajo)
-        if (modelo.obstaculoX < 90 && modelo.obstaculoX > 50 && (modelo.personajeY + 50) > 300) {
+        if (modelo.getObstaculoX() < GameConstants.COLLISION_X_MAX && 
+            modelo.getObstaculoX() > GameConstants.COLLISION_X_MIN && 
+            (modelo.getPersonajeY() + GameConstants.PLAYER_HEIGHT) > GameConstants.COLLISION_GROUND_Y) {
             finalizarJuego();
             return;
         }
 
         // Colisión con obstáculo del cielo (arriba)
-        if (modelo.obstaculoCieloActivo && 
-            modelo.obstaculoCieloX < 90 && modelo.obstaculoCieloX > 50 && 
-            modelo.personajeY < 140) {
+        if (modelo.isObstaculoCieloActivo() && 
+            modelo.getObstaculoCieloX() < GameConstants.COLLISION_X_MAX && 
+            modelo.getObstaculoCieloX() > GameConstants.COLLISION_X_MIN && 
+            modelo.getPersonajeY() < GameConstants.COLLISION_SKY_Y_MAX) {
             finalizarJuego();
         }
     }
@@ -176,11 +179,11 @@ public class MotorJuego implements ActionListener, KeyListener {
      */
     private void finalizarJuego() {
         timer.stop();
-        modelo.enJuego = false;
+        modelo.setEnJuego(false);
         juegoEnProgreso = false;
         
         // Actualizar panel de resultados
-        vista.panelResultados.actualizarResultados(modelo.nombreJugador, modelo.puntuacion);
+        vista.panelResultados.actualizarResultados(modelo.getNombreJugador(), modelo.getPuntuacion());
         vista.mostrarPanel("RESULTADOS");
     }
 
@@ -192,8 +195,9 @@ public class MotorJuego implements ActionListener, KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE && modelo.personajeY >= 300 && juegoEnProgreso) {
-            modelo.personajeY -= 150; // Salto
+        if (e.getKeyCode() == KeyEvent.VK_SPACE && 
+            modelo.getPersonajeY() >= GameConstants.COLLISION_GROUND_Y && juegoEnProgreso) {
+            modelo.setPersonajeY(modelo.getPersonajeY() - GameConstants.JUMP_HEIGHT);
         }
     }
 

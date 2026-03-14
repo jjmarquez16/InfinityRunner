@@ -266,6 +266,53 @@ java main.Main
 - [ ] Multijugador online
 - [ ] Sistema de logros
 
+## Refactorizaciones Realizadas
+
+### Clase GameConstants
+
+Se creó una clase centralizada `GameConstants.java` que contiene todas las constantes del juego:
+
+- Dimensiones y posiciones iniciales
+- Valores de física (gravedad, velocidad, salto)
+- Colores para la interfaz
+- Fuentes y tamaños
+- Textos constantes de la aplicación
+
+**Beneficio:** Facilita cambios de configuración sin modificar múltiples archivos.
+
+### Modelo.java - Encapsulación
+
+Se refactorizó la clase Modelo implementando:
+
+- Conversión de atributos públicos a privados
+- Getters y setters para todos los atributos
+- Validación de valores en setters
+- Métodos de lógica: `incrementarPuntuacion()`, `incrementarVelocidad()`, `debeActivarObstaculoCielo()`, etc.
+
+**Beneficio:** Mayor control sobre los datos, validación automática y lógica centralizada.
+
+### PanelMenu.java - Métodos Auxiliares
+
+Se crearon métodos helper para reducir duplicación de código:
+
+- `crearGridBagConstraints()` - Crea constraints reutilizables
+- `agregarEtiqueta()` - Agrega etiquetas con estilo
+- `agregarCampoNombre()` - Agrupa componentes relacionados
+- `agregarBotónJugar()` - Configura el botón de jugar
+
+**Beneficio:** Código más limpio, mantenible y reutilizable.
+
+### MotorJuego.java - Métodos Mejorados
+
+Se refactorizaron los métodos de actualización usando:
+
+- Constantes de GameConstants
+- Getters/setters del Modelo
+- Métodos auxiliares más granulares
+- Validación mejorada de entrada de usuario
+
+**Beneficio:** Código más legible y menos acoplado a valores mágicos.
+
 ## Documentación Adicional
 
 - **[GDD.md](GDD.md)** - Game Design Document completo

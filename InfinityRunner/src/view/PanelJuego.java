@@ -67,7 +67,7 @@ public class PanelJuego extends JPanel {
      * @param modelo el modelo de datos actual
      */
     public void actualizar(Modelo modelo) {
-        lblPuntuacion.setText("Puntos: " + modelo.puntuacion);
+        lblPuntuacion.setText("Puntos: " + modelo.getPuntuacion());
         canvasJuego.actualizar(modelo);
     }
 
@@ -196,10 +196,10 @@ public class PanelJuego extends JPanel {
          */
         private void dibujarProtagonista(Graphics2D g) {
             if (imgProtagonista != null) {
-                g.drawImage(imgProtagonista, 50, modelo.personajeY, 60, 60, null);
+                g.drawImage(imgProtagonista, 50, modelo.getPersonajeY(), 60, 60, null);
             } else {
                 g.setColor(Color.RED);
-                g.fillRect(50, modelo.personajeY, 50, 50);
+                g.fillRect(50, modelo.getPersonajeY(), 50, 50);
             }
         }
 
@@ -209,12 +209,12 @@ public class PanelJuego extends JPanel {
         private void dibujarObstaculos(Graphics2D g) {
             // Obstáculo del suelo
             g.setColor(Color.BLACK);
-            g.fillRect(modelo.obstaculoX, 305, 30, 45);
+            g.fillRect(modelo.getObstaculoX(), 305, 30, 45);
 
             // Obstáculo del cielo
-            if (modelo.obstaculoCieloActivo) {
+            if (modelo.isObstaculoCieloActivo()) {
                 g.setColor(new Color(255, 100, 0));
-                g.fillRect(modelo.obstaculoCieloX, modelo.obstaculoCieloY, 30, 35);
+                g.fillRect(modelo.getObstaculoCieloX(), modelo.getObstaculoCieloY(), 30, 35);
             }
         }
     }
