@@ -14,6 +14,12 @@ public class Modelo {
     public int personajeY = 300;
     /** Posición horizontal del obstáculo (eje X) */
     public int obstaculoX = 800;
+    /** Posición horizontal del obstáculo del cielo (eje X) */
+    public int obstaculoCieloX = 800;
+    /** Posición vertical del obstáculo del cielo (eje Y) */
+    public int obstaculoCieloY = 120;
+    /** Flag que indica si el obstáculo del cielo está activo */
+    public boolean obstaculoCieloActivo = false;
     /** Puntuación actual del jugador */
     public int puntuacion = 0;
     /** Flag que indica si el juego está en curso */
@@ -28,6 +34,9 @@ public class Modelo {
     public void reiniciar() {
         personajeY = 300;
         obstaculoX = 800;
+        obstaculoCieloX = 800;
+        obstaculoCieloY = 120;
+        obstaculoCieloActivo = false;
         puntuacion = 0;
         velocidadObstaculo = 8;
         enJuego = true;

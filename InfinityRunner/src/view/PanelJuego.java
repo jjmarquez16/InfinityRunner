@@ -20,27 +20,34 @@ public class PanelJuego extends JPanel {
     private Modelo modelo;
     /** Imagen del personaje principal (tortuga) */
     private BufferedImage imgProtagonista;
+    /** Imagen de fondo del escenario */
+    private BufferedImage imgFondo;
 
     /**
      * Constructor del panel de juego.
-     * Inicializa el fondo verde neón y carga los recursos necesarios.
+     * Inicializa y carga los recursos necesarios (imágenes del protagonista y fondo).
      */
     public PanelJuego() {
-        // Fondo Verde Neón llamativo
         setBackground(new Color(57, 255, 20)); 
         cargarRecursos();
     }
 
     /**
      * Carga los recursos gráficos del juego.
-     * Intenta cargar la imagen del protagonista desde los recursos de la aplicación.
+     * Intenta cargar las imágenes del protagonista y el fondo desde los recursos de la aplicación.
      */
     private void cargarRecursos() {
         try {
-            // Cargamos la imagen de la tortuga (Protagonista.png)
+            // Cargamos la imagen del protagonista (Protagonista.png)
             imgProtagonista = intentarCargar("/resources/Protagonista.png", "src/resources/Protagonista.png");
+            System.out.println("Protagonista cargada: " + (imgProtagonista != null ? "SÍ" : "NO"));
+            
+            // Cargamos la imagen de fondo (FondoSelva.png)
+            imgFondo = intentarCargar("/resources/FondoSelva.png", "src/resources/FondoSelva.png");
+            System.out.println("Fondo cargado: " + (imgFondo != null ? "SÍ" : "NO"));
         } catch (Exception e) {
-            System.err.println("Error al cargar la tortuga: " + e.getMessage());
+            System.err.println("Error al cargar los recursos: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -54,11 +61,25 @@ public class PanelJuego extends JPanel {
      */
     private BufferedImage intentarCargar(String pathRecurso, String pathArchivo) {
         try {
+            // Intenta desde los recursos de la clase
             URL url = getClass().getResource(pathRecurso);
-            if (url != null) return ImageIO.read(url);
+            if (url != null) {
+                System.out.println("Imagen encontrada desde recursos: " + pathRecurso);
+                return ImageIO.read(url);
+            }
+            
+            // Intenta desde el sistema de archivos (ruta relativa)
             File f = new File(pathArchivo);
-            if (f.exists()) return ImageIO.read(f);
-        } catch (Exception e) {}
+            if (f.exists()) {
+                System.out.println("Imagen encontrada desde archivo: " + f.getAbsolutePath());
+                return ImageIO.read(f);
+            }
+            
+            System.err.println("Imagen no encontrada: " + pathRecurso + " o " + pathArchivo);
+        } catch (Exception e) {
+            System.err.println("Error cargando imagen: " + e.getMessage());
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -80,14 +101,23 @@ public class PanelJuego extends JPanel {
      */
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // Esto pintará el fondo Verde Neón
+        super.paintComponent(g);
         if (modelo == null) return;
 
-        // 1. DIBUJAR EL SUELO
+        // 1. DIBUJAR EL FONDO
+        if (imgFondo != null) {
+            g.drawImage(imgFondo, 0, 0, getWidth(), getHeight(), null);
+        } else {
+            // Fallback: Fondo verde neón si no carga la imagen
+            g.setColor(new Color(57, 255, 20));
+            g.fillRect(0, 0, getWidth(), getHeight());
+        }
+
+        // 2. DIBUJAR EL SUELO
         g.setColor(new Color(34, 139, 34)); // Verde oscuro para contraste
         g.fillRect(0, 350, getWidth(), 150);
 
-        // 2. DIBUJAR AL PROTAGONISTA (La Tortuga)
+        // 3. DIBUJAR AL PROTAGONISTA
         if (imgProtagonista != null) {
             g.drawImage(imgProtagonista, 50, modelo.personajeY, 60, 60, null);
         } else {
@@ -96,11 +126,17 @@ public class PanelJuego extends JPanel {
             g.fillRect(50, modelo.personajeY, 50, 50);
         }
 
-        // 3. DIBUJAR OBSTÁCULO
+        // 4. DIBUJAR OBSTÁCULO
         g.setColor(Color.BLACK);
         g.fillRect(modelo.obstaculoX, 305, 30, 45);
 
-        // 4. INTERFAZ (UI)
+        // 5. DIBUJAR OBSTÁCULO DEL CIELO
+        if (modelo.obstaculoCieloActivo) {
+            g.setColor(new Color(255, 100, 0)); // Naranja para diferenciarlo
+            g.fillRect(modelo.obstaculoCieloX, modelo.obstaculoCieloY, 25, 25);
+        }
+
+        // 6. INTERFAZ (UI)
         g.setFont(new Font("Arial", Font.BOLD, 25));
         g.setColor(Color.BLUE);
         g.drawString("Puntos: " + modelo.puntuacion, 20, 40);

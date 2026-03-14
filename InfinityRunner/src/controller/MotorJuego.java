@@ -64,11 +64,17 @@ public class MotorJuego implements ActionListener, KeyListener {
         if (!modelo.enJuego)
             return;
 
-        // Lógica de movimiento
+        // Lógica de movimiento del obstáculo normal
         modelo.obstaculoX -= modelo.velocidadObstaculo;
         if (modelo.obstaculoX < -20) {
             modelo.obstaculoX = 800;
             modelo.puntuacion++;
+            
+            // Aparece un obstáculo del cielo cada 5 obstáculos normales
+            if (modelo.puntuacion % 5 == 0) {
+                modelo.obstaculoCieloActivo = true;
+                modelo.obstaculoCieloX = 800;
+            }
             
             // Aumentar velocidad cada 3 obstáculos
             if (modelo.puntuacion % 3 == 0) {
@@ -76,12 +82,27 @@ public class MotorJuego implements ActionListener, KeyListener {
             }
         }
 
+        // Lógica de movimiento del obstáculo del cielo
+        if (modelo.obstaculoCieloActivo) {
+            modelo.obstaculoCieloX -= modelo.velocidadObstaculo;
+            if (modelo.obstaculoCieloX < -20) {
+                modelo.obstaculoCieloActivo = false;
+            }
+        }
+
         // Gravedad simple
         if (modelo.personajeY < 300)
             modelo.personajeY += 5;
 
-        // Colisión
+        // Colisión con obstáculo normal (abajo)
         if (modelo.obstaculoX < 90 && modelo.obstaculoX > 50 && (modelo.personajeY + 50) > 300) {
+            finalizarJuego();
+        }
+
+        // Colisión con obstáculo del cielo (arriba)
+        if (modelo.obstaculoCieloActivo && 
+            modelo.obstaculoCieloX < 90 && modelo.obstaculoCieloX > 50 && 
+            modelo.personajeY < 140) {
             finalizarJuego();
         }
 
