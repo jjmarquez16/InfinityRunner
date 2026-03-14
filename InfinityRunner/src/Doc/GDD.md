@@ -2,13 +2,13 @@
 
 ## 1. Información General
 
-| Aspecto | Descripción |
-|--------|-------------|
-| **Título del Juego** | InfinityRunner: Individual Edition |
-| **Género** | Arcade / Endless Runner |
-| **Plataforma** | PC (Java Swing) |
+| Aspecto              | Descripción                            |
+| -------------------- | -------------------------------------- |
+| **Título del Juego** | InfinityRunner: Individual Edition     |
+| **Género**           | Arcade / Endless Runner                |
+| **Plataforma**       | PC (Java Swing)                        |
 | **Público Objetivo** | Jugadores casuales de todas las edades |
-| **Modo de Juego** | Un jugador (Single Player) |
+| **Modo de Juego**    | Un jugador (Single Player)             |
 
 ---
 
@@ -21,6 +21,7 @@
 ## 3. Mecánica de Juego
 
 ### 3.1 Movimiento del Personaje
+
 - **Control Principal**: Barra espaciadora para saltar
 - **Altura de Salto**: Fija (150 píxeles)
 - **Posición Base**: El personaje permanece horizontalmente en el centro-izquierda de la pantalla (coordenada X = 50-90)
@@ -28,6 +29,7 @@
 - **Velocidad de Caída**: 5 píxeles por frame
 
 ### 3.2 Sistema de Obstáculos
+
 - **Tipo**: Objetos que se desplazan horizontalmente de derecha a izquierda
 - **Velocidad**: 8 píxeles por frame
 - **Posición de Spawn**: Coordenada X = 800 (fuera de pantalla a la derecha)
@@ -35,6 +37,7 @@
 - **Rango de Peligro**: X: 50-90, Y: 300 (colisión con personaje)
 
 ### 3.3 Sistema de Puntuación
+
 - **Puntos por Obstáculo Evitado**: +1 punto
 - **Condición**: El obstáculo debe pasar completamente sin colisionar
 - **Reinicio**: La puntuación se reinicia a 0 en cada nueva partida
@@ -78,10 +81,12 @@ VOLVER AL MENÚ
 ## 5. Dinámicas de Juego
 
 ### 5.1 Curva de Dificultad
+
 - **Actual**: Dificultad constante (obstáculos a velocidad fija)
 - **Frecuencia de Obstáculos**: Uno cada aproximadamente 4.5 segundos
 
 ### 5.2 Desafío del Jugador
+
 - **Timing**: El jugador debe calcular el momento exacto para saltar
 - **Precisión**: La altura de salto es fija, requiriendo sincronización perfecta
 - **Reflejos**: A medida que aumentan los puntos, la presión psicológica aumenta
@@ -91,6 +96,7 @@ VOLVER AL MENÚ
 ## 6. Interfaz de Usuario
 
 ### 6.1 Pantalla de Menú
+
 ```
 ┌──────────────────────────┐
 │   JAVA RUNNER            │
@@ -103,6 +109,7 @@ VOLVER AL MENÚ
 ```
 
 ### 6.2 Pantalla de Juego
+
 ```
 ┌──────────────────────────┐
 │  Puntos: [XX]            │
@@ -116,6 +123,7 @@ VOLVER AL MENÚ
 ```
 
 ### 6.3 Pantalla de Game Over
+
 ```
 Dialog:
 ¡Game Over, [Nombre]!
@@ -130,12 +138,14 @@ Puntos: [XX]
 ## 7. Personaje
 
 ### 7.1 Protagonista
+
 - **Tipo**: Corredor/Saltador
 - **Tamaño**: 40 × 50 píxeles (estimado)
 - **Posición Fija**: Horizontalmente en X = 50-90
 - **Animación**: Cambio de posición Y (salto simple)
 
 ### 7.2 Comportamiento
+
 - Solo se mueve verticalmente (arriba/abajo)
 - Puede saltar cuando está en la plataforma base (Y ≥ 300)
 - Cae automáticamente por gravedad
@@ -145,6 +155,7 @@ Puntos: [XX]
 ## 8. Enemigos/Obstáculos
 
 ### 8.1 Obstáculo Genérico
+
 - **Representación**: Rectángulo/Objeto visual
 - **Tamaño**: 20 × 50 píxeles (estimado)
 - **Velocidad**: 8 píxeles por frame (constante)
@@ -156,12 +167,14 @@ Puntos: [XX]
 ## 9. Sistema de Puntuación y Récords
 
 ### 9.1 Puntuación Actual
+
 - **Método de Cálculo**: +1 por cada obstáculo completamente evitado
 - **Visualización**: En tiempo real durante la partida
 
 ### 9.2 Sistema de Récords (PENDIENTE DE IMPLEMENTACIÓN)
+
 - **Almacenamiento**: Archivo persistente o Base de datos
-- **Información Guardada**: 
+- **Información Guardada**:
   - Nombre del jugador
   - Puntuación alcanzada
   - Fecha/Hora de la partida
@@ -173,20 +186,23 @@ Puntos: [XX]
 ## 10. Requisitos Técnicos
 
 ### 10.1 Arquitectura
+
 - **Patrón**: MVC (Model-View-Controller)
   - **Model** (`Modelo.java`): Lógica del juego y estado
   - **View** (`VentanaPrincipal.java`, `PanelJuego.java`, `PanelMenu.java`): Interfaz gráfica
   - **Controller** (`MotorJuego.java`): Manejo de entrada y actualización de lógica
 
 ### 10.2 Tecnologías
+
 - **Lenguaje**: Java
 - **Framework GUI**: Swing
 - **Tiempo de Frame**: 20ms por actualización (50 FPS)
-- **Listeners**: 
+- **Listeners**:
   - `ActionListener`: Para el Timer
   - `KeyListener`: Para entrada del teclado
 
 ### 10.3 Dependencias
+
 - JDK 8 o superior
 - Swing (incluido en JDK)
 
@@ -195,11 +211,13 @@ Puntos: [XX]
 ## 11. Arte y Estética
 
 ### 11.1 Estilo Visual
+
 - **Género**: Minimalista/Retro
 - **Colores**: Paleta simple (fondos planos, formas geométricas)
 - **Resolución**: 800 × 500 píxeles
 
 ### 11.2 Sonido (Futuro)
+
 - Efectos de sonido para saltos
 - Sonido de colisión
 - Música de fondo continua
@@ -207,6 +225,7 @@ Puntos: [XX]
 ---
 
 ## 12. Multijugador (FUERA DEL ALCANCE ACTUAL)
+
 - Modo actual: Solo jugador
 - Futuro: Comparación de récords con otros jugadores
 
@@ -217,6 +236,7 @@ Puntos: [XX]
 **Versión**: 0.1.0 (Alpha)
 
 ### Implementado:
+
 - ✅ Mecánica básica de saltos
 - ✅ Sistema de obstáculos
 - ✅ Sistema de puntuación simple
@@ -225,6 +245,7 @@ Puntos: [XX]
 - ✅ Game Over por colisión
 
 ### Pendiente de Implementación:
+
 - 🔄 Sistema de récords persistente
 - 🔄 Aumentar dificultad progresiva
 - 🔄 Múltiples plataformas
@@ -238,12 +259,14 @@ Puntos: [XX]
 ## 14. Referencias y Inspiración
 
 **Juegos Similares:**
+
 - Flappy Bird
 - Chrome Dino Run
 - Geometry Dash
 - Jump King
 
 **Elementos Clave Adoptados:**
+
 - Mecánica simple de un botón
 - Dificultad basada en sincronización
 - Replayabilidad mediante competetencia de puntos
