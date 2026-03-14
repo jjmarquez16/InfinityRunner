@@ -20,8 +20,6 @@ public class PanelJuego extends JPanel {
     private Modelo modelo;
     /** Imagen del personaje principal (tortuga) */
     private BufferedImage imgProtagonista;
-    /** Imagen de fondo del escenario */
-    private BufferedImage imgFondo;
 
     /**
      * Constructor del panel de juego.
@@ -41,10 +39,6 @@ public class PanelJuego extends JPanel {
             // Cargamos la imagen del protagonista (Protagonista.png)
             imgProtagonista = intentarCargar("/resources/Protagonista.png", "src/resources/Protagonista.png");
             System.out.println("Protagonista cargada: " + (imgProtagonista != null ? "SÍ" : "NO"));
-            
-            // Cargamos la imagen de fondo (FondoSelva.png)
-            imgFondo = intentarCargar("/resources/FondoSelva.png", "src/resources/FondoSelva.png");
-            System.out.println("Fondo cargado: " + (imgFondo != null ? "SÍ" : "NO"));
         } catch (Exception e) {
             System.err.println("Error al cargar los recursos: " + e.getMessage());
             e.printStackTrace();
@@ -105,13 +99,8 @@ public class PanelJuego extends JPanel {
         if (modelo == null) return;
 
         // 1. DIBUJAR EL FONDO
-        if (imgFondo != null) {
-            g.drawImage(imgFondo, 0, 0, getWidth(), getHeight(), null);
-        } else {
-            // Fallback: Fondo verde neón si no carga la imagen
-            g.setColor(new Color(57, 255, 20));
-            g.fillRect(0, 0, getWidth(), getHeight());
-        }
+        g.setColor(new Color(57, 255, 20));
+        g.fillRect(0, 0, getWidth(), getHeight());
 
         // 2. DIBUJAR EL SUELO
         g.setColor(new Color(34, 139, 34)); // Verde oscuro para contraste
