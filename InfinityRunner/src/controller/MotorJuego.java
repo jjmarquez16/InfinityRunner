@@ -28,13 +28,30 @@ public class MotorJuego implements ActionListener, KeyListener {
      * @param modelo el modelo de datos del juego
      * @param vista la ventana principal
      */
+    /** Indica si el juego está en progreso */
+    private boolean juegoEnProgreso = false;
+
     public MotorJuego(Modelo modelo, VentanaPrincipal vista) {
         this.modelo = modelo;
         this.vista = vista;
         this.timer = new Timer(20, this);
 
-        // Listeners
+        // Configurar listeners
+        configurarListeners();
+    }
+
+    /**
+     * Configura todos los listeners de eventos de la aplicación.
+     */
+    private void configurarListeners() {
+        // Botón para iniciar juego
         this.vista.panelMenu.btnJugar.addActionListener(e -> iniciarJuego());
+        
+        // Botones de resultados
+        this.vista.panelResultados.btnReiniciar.addActionListener(e -> reiniciarJuego());
+        this.vista.panelResultados.btnVolverAlMenu.addActionListener(e -> volverAlMenu());
+        
+        // Listeners de teclado
         this.vista.addKeyListener(this);
         this.vista.setFocusable(true);
     }
@@ -46,10 +63,33 @@ public class MotorJuego implements ActionListener, KeyListener {
     private void iniciarJuego() {
         modelo.nombreJugador = vista.panelMenu.txtNombre.getText();
         if (modelo.nombreJugador.isEmpty())
-            modelo.nombreJugador = "Jugador 1";
+            modelo.nombreJugador = "Jugador";
+        
         modelo.reiniciar();
-        vista.tarjetas.show(vista.contenedor, "JUEGO");
+        juegoEnProgreso = true;
+        vista.mostrarPanel("JUEGO");
         timer.start();
+        vista.requestFocusInWindow();
+    }
+
+    /**
+     * Reinicia la partida actual manteniendo el nombre del jugador.
+     */
+    private void reiniciarJuego() {
+        modelo.reiniciar();
+        juegoEnProgreso = true;
+        vista.mostrarPanel("JUEGO");
+        timer.start();
+        vista.requestFocusInWindow();
+    }
+
+    /**
+     * Vuelve al menú principal desde la pantalla de resultados.
+     */
+    private void volverAlMenu() {
+        timer.stop();
+        juegoEnProgreso = false;
+        vista.mostrarPanel("MENU");
         vista.requestFocusInWindow();
     }
 
@@ -61,9 +101,22 @@ public class MotorJuego implements ActionListener, KeyListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!modelo.enJuego)
+        if (!modelo.enJuego || !juegoEnProgreso)
             return;
 
+        // Actualizar lógica del juego
+        actualizarObstaculos();
+        actualizarGravedad();
+        verificarColisiones();
+        
+        // Redibujar
+        vista.panelJuego.actualizar(modelo);
+    }
+
+    /**
+     * Actualiza la posición de los obstáculos.
+     */
+    private void actualizarObstaculos() {
         // Lógica de movimiento del obstáculo normal
         modelo.obstaculoX -= modelo.velocidadObstaculo;
         if (modelo.obstaculoX < -20) {
@@ -89,14 +142,24 @@ public class MotorJuego implements ActionListener, KeyListener {
                 modelo.obstaculoCieloActivo = false;
             }
         }
+    }
 
-        // Gravedad simple
+    /**
+     * Actualiza la gravedad del personaje.
+     */
+    private void actualizarGravedad() {
         if (modelo.personajeY < 300)
             modelo.personajeY += 5;
+    }
 
+    /**
+     * Verifica colisiones con los obstáculos.
+     */
+    private void verificarColisiones() {
         // Colisión con obstáculo normal (abajo)
         if (modelo.obstaculoX < 90 && modelo.obstaculoX > 50 && (modelo.personajeY + 50) > 300) {
             finalizarJuego();
+            return;
         }
 
         // Colisión con obstáculo del cielo (arriba)
@@ -105,19 +168,20 @@ public class MotorJuego implements ActionListener, KeyListener {
             modelo.personajeY < 140) {
             finalizarJuego();
         }
-
-        vista.panelJuego.actualizar(modelo);
     }
 
     /**
      * Finaliza la partida actual.
-     * Detiene el timer, muestra un cuadro de diálogo con la puntuación y vuelve al menú.
+     * Detiene el timer y muestra la pantalla de resultados.
      */
     private void finalizarJuego() {
         timer.stop();
         modelo.enJuego = false;
-        JOptionPane.showMessageDialog(vista, "¡Game Over, " + modelo.nombreJugador + "!\nPuntos: " + modelo.puntuacion);
-        vista.tarjetas.show(vista.contenedor, "MENU");
+        juegoEnProgreso = false;
+        
+        // Actualizar panel de resultados
+        vista.panelResultados.actualizarResultados(modelo.nombreJugador, modelo.puntuacion);
+        vista.mostrarPanel("RESULTADOS");
     }
 
     /**
@@ -128,7 +192,7 @@ public class MotorJuego implements ActionListener, KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE && modelo.personajeY >= 300) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE && modelo.personajeY >= 300 && juegoEnProgreso) {
             modelo.personajeY -= 150; // Salto
         }
     }
