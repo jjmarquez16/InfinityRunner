@@ -4,37 +4,37 @@ import javax.swing.*;
 import java.awt.*;
 import model.Modelo;
 import java.net.URL;
+import java.io.File;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 public class PanelJuego extends JPanel {
     private Modelo modelo;
-    private Image imgPersonaje;
-    private Image imgFondo;
+    private BufferedImage imgProtagonista;
 
     public PanelJuego() {
-        setBackground(Color.BLACK);
+        // Fondo Verde Neón llamativo
+        setBackground(new Color(57, 255, 20)); 
         cargarRecursos();
     }
 
     private void cargarRecursos() {
         try {
-            // Cargar Protagonista
-            imgPersonaje = cargarImagen("/resources/Protagonista.png", "src/resources/Protagonista.png");
-            
-            // Cargar Fondo Selva
-            imgFondo = cargarImagen("/resources/FondoSelva.png", "src/resources/FondoSelva.png");
-            
+            // Cargamos la imagen de la tortuga (Protagonista.png)
+            imgProtagonista = intentarCargar("/resources/Protagonista.png", "src/resources/Protagonista.png");
         } catch (Exception e) {
-            System.err.println("Error al cargar recursos: " + e.getMessage());
+            System.err.println("Error al cargar la tortuga: " + e.getMessage());
         }
     }
 
-    private Image cargarImagen(String pathRecurso, String pathArchivo) {
-        URL url = getClass().getResource(pathRecurso);
-        if (url != null) {
-            return new ImageIcon(url).getImage();
-        } else {
-            return new ImageIcon(pathArchivo).getImage();
-        }
+    private BufferedImage intentarCargar(String pathRecurso, String pathArchivo) {
+        try {
+            URL url = getClass().getResource(pathRecurso);
+            if (url != null) return ImageIO.read(url);
+            File f = new File(pathArchivo);
+            if (f.exists()) return ImageIO.read(f);
+        } catch (Exception e) {}
+        return null;
     }
 
     public void actualizar(Modelo modelo) {
@@ -44,44 +44,34 @@ public class PanelJuego extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        super.paintComponent(g); // Esto pintará el fondo Verde Neón
         if (modelo == null) return;
 
-        // Dibujar Fondo
-        if (imgFondo != null) {
-            g.drawImage(imgFondo, 0, 0, getWidth(), getHeight(), this);
-        } else {
-            g.setColor(new Color(39, 174, 96));
-            g.fillRect(0, 0, getWidth(), getHeight());
-        }
+        // 1. DIBUJAR EL SUELO
+        g.setColor(new Color(34, 139, 34)); // Verde oscuro para contraste
+        g.fillRect(0, 350, getWidth(), 150);
 
-        // Suelo (semi-transparente o sutil para que se vea el fondo)
-        g.setColor(new Color(0, 0, 0, 100));
-        g.fillRect(0, 350, 800, 150);
-
-        // Personaje
-        if (imgPersonaje != null) {
-            g.drawImage(imgPersonaje, 50, modelo.personajeY, 50, 50, this);
+        // 2. DIBUJAR AL PROTAGONISTA (La Tortuga)
+        if (imgProtagonista != null) {
+            g.drawImage(imgProtagonista, 50, modelo.personajeY, 60, 60, null);
         } else {
+            // Fallback: Cuadrado rojo si no carga la imagen
             g.setColor(Color.RED);
             g.fillRect(50, modelo.personajeY, 50, 50);
         }
 
-        // Obstáculo
-        g.setColor(new Color(192, 57, 43));
-        g.fillRoundRect(modelo.obstaculoX, 300, 30, 50, 10, 10);
-
-        // UI con sombra para legibilidad sobre el fondo
-        g.setFont(new Font("Verdana", Font.BOLD, 20));
-        
-        // Sombra
+        // 3. DIBUJAR OBSTÁCULO
         g.setColor(Color.BLACK);
-        g.drawString("Score: " + modelo.puntuacion, 22, 42);
-        g.drawString("Player: " + modelo.nombreJugador, 22, 72);
+        g.fillRect(modelo.obstaculoX, 305, 30, 45);
+
+        // 4. INTERFAZ (UI)
+        g.setFont(new Font("Arial", Font.BOLD, 25));
+        g.setColor(Color.BLUE);
+        g.drawString("Puntos: " + modelo.puntuacion, 20, 40);
         
-        // Texto principal
-        g.setColor(Color.YELLOW);
-        g.drawString("Score: " + modelo.puntuacion, 20, 40);
-        g.drawString("Player: " + modelo.nombreJugador, 20, 70);
+        // Indicador de velocidad
+        g.setFont(new Font("Arial", Font.PLAIN, 14));
+        int vel = 8 + (modelo.puntuacion / 10) * 2;
+        g.drawString("Velocidad: " + vel, 20, 65);
     }
 }
