@@ -11,19 +11,19 @@ import java.awt.*;
  */
 public final class GameConstants {
     
-    // ==================== VENTANA ====================
+    //  VENTANA 
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 500;
     public static final String WINDOW_TITLE = "InfinityRunner - El Juego del Corredor Infinito";
     
-    // ==================== FÍSICAS DEL JUEGO ====================
+    //  FÍSICAS DEL JUEGO 
     public static final int GRAVITY = 5;                    // Píxeles por frame
     public static final int JUMP_HEIGHT = 150;              // Altura del salto
     public static final int BASE_OBSTACLE_SPEED = 8;        // Velocidad inicial
     public static final int SPEED_INCREMENT = 1;            // Incremento de velocidad
     public static final int SPEED_INCREMENT_INTERVAL = 3;   // Cada N puntos
     
-    // ==================== POSICIONES INICIALES ====================
+    // POSICIONES INICIALES 
     public static final int PLAYER_INITIAL_Y = 300;         // Y inicial del personaje
     public static final int PLAYER_X = 50;                  // X fijo del personaje
     public static final int PLAYER_WIDTH = 60;              // Ancho del personaje
@@ -38,17 +38,17 @@ public final class GameConstants {
     public static final int OBSTACLE_SKY_HEIGHT = 35;       // Alto
     public static final int OBSTACLE_SKY_INTERVAL = 5;      // Aparece cada N puntos
     
-    // ==================== DETECCIÓN DE COLISIONES ====================
+    //  DETECCIÓN DE COLISIONES 
     public static final int COLLISION_X_MIN = 50;           // X mínima de colisión
     public static final int COLLISION_X_MAX = 90;           // X máxima de colisión
     public static final int COLLISION_GROUND_Y = 300;       // Y de división suelo-aire
     public static final int COLLISION_SKY_Y_MAX = 140;      // Y máximo del cielo
     
-    // ==================== TIMMER Y FPS ====================
+    //  TIMMER Y FPS 
     public static final int TIMER_DELAY = 20;               // Milisegundos (50 FPS)
     public static final int TARGET_FPS = 50;
     
-    // ==================== COLORES ====================
+    //  COLORES 
     public static final Color COLOR_BG_GAME = new Color(57, 255, 20);      // Verde neón
     public static final Color COLOR_GROUND = new Color(34, 139, 34);       // Verde oscuro
     public static final Color COLOR_OBSTACLE = Color.BLACK;
@@ -74,7 +74,7 @@ public final class GameConstants {
     public static final Color COLOR_INFO_TEXT = new Color(100, 200, 255);
     public static final Color COLOR_SCORE_TEXT = new Color(100, 255, 100);
     
-    // ==================== FUENTES ====================
+    //  FUENTES 
     public static final Font FONT_TITLE = new Font("Verdana", Font.BOLD, 48);
     public static final Font FONT_SUBTITLE = new Font("Verdana", Font.ITALIC, 18);
     public static final Font FONT_LABEL = new Font("Arial", Font.BOLD, 14);
@@ -84,12 +84,12 @@ public final class GameConstants {
     public static final Font FONT_INSTRUCTION = new Font("Arial", Font.ITALIC, 12);
     public static final Font FONT_INFO = new Font("Arial", Font.BOLD, 14);
     
-    // ==================== VALORES DE UI ====================
+    //  VALORES DE UI 
     public static final int INSET_LARGE = 15;
     public static final int INSET_MEDIUM = 10;
     public static final int BORDER_SIZE = 2;
     
-    // ==================== TEXTOS ====================
+    //  TEXTOS 
     public static final String TEXT_TITLE = "INFINITY RUNNER";
     public static final String TEXT_SUBTITLE = "El Juego del Corredor Infinito";
     public static final String TEXT_LABEL_NAME = "Tu Nombre:";
