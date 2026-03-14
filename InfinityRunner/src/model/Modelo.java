@@ -17,7 +17,7 @@ public class Modelo {
     /** Posición horizontal del obstáculo del cielo (eje X) */
     public int obstaculoCieloX = 800;
     /** Posición vertical del obstáculo del cielo (eje Y) */
-    public int obstaculoCieloY = 120;
+    public int obstaculoCieloY = 270;
     /** Flag que indica si el obstáculo del cielo está activo */
     public boolean obstaculoCieloActivo = false;
     /** Puntuación actual del jugador */
@@ -35,7 +35,7 @@ public class Modelo {
         personajeY = 300;
         obstaculoX = 800;
         obstaculoCieloX = 800;
-        obstaculoCieloY = 120;
+        obstaculoCieloY = 270;
         obstaculoCieloActivo = false;
         puntuacion = 0;
         velocidadObstaculo = 8;

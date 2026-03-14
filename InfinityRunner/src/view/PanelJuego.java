@@ -133,7 +133,7 @@ public class PanelJuego extends JPanel {
         // 5. DIBUJAR OBSTÁCULO DEL CIELO
         if (modelo.obstaculoCieloActivo) {
             g.setColor(new Color(255, 100, 0)); // Naranja para diferenciarlo
-            g.fillRect(modelo.obstaculoCieloX, modelo.obstaculoCieloY, 25, 25);
+            g.fillRect(modelo.obstaculoCieloX, modelo.obstaculoCieloY, 30, 35);
         }
 
         // 6. INTERFAZ (UI)
