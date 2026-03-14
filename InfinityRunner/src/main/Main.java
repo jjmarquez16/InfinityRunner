@@ -8,7 +8,7 @@ import controller.MotorJuego;
  * Clase principal de la aplicación InfinityRunner.
  * Punto de entrada de la aplicación que inicializa el modelo, la vista y el controlador.
  * 
- * @author Equipo de Desarrollo
+ * @author Jose Ramon Neira Vega
  * @version 1.0
  */
 public class Main {
