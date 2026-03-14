@@ -5,11 +5,29 @@ import java.awt.event.*;
 import model.Modelo;
 import view.VentanaPrincipal;
 
+/**
+ * Controlador principal del juego InfinityRunner.
+ * Maneja la lógica de juego, gestión de eventos de teclado, colisiones y actualización del estado.
+ * Implementa el patrón MVC (Modelo-Vista-Controlador).
+ * 
+ * @author Equipo de Desarrollo
+ * @version 1.0
+ */
 public class MotorJuego implements ActionListener, KeyListener {
+    /** Referencia al modelo de datos del juego */
     private Modelo modelo;
+    /** Referencia a la ventana principal de la aplicación */
     private VentanaPrincipal vista;
+    /** Timer para controlar el ciclo de juego */
     private Timer timer;
 
+    /**
+     * Constructor del MotorJuego.
+     * Inicializa el modelo, la vista y configura los listeners de eventos.
+     * 
+     * @param modelo el modelo de datos del juego
+     * @param vista la ventana principal
+     */
     public MotorJuego(Modelo modelo, VentanaPrincipal vista) {
         this.modelo = modelo;
         this.vista = vista;
@@ -21,6 +39,10 @@ public class MotorJuego implements ActionListener, KeyListener {
         this.vista.setFocusable(true);
     }
 
+    /**
+     * Inicia una nueva partida del juego.
+     * Obtiene el nombre del jugador, reinicia el modelo y muestra el panel de juego.
+     */
     private void iniciarJuego() {
         modelo.nombreJugador = vista.panelMenu.txtNombre.getText();
         if (modelo.nombreJugador.isEmpty())
@@ -31,6 +53,12 @@ public class MotorJuego implements ActionListener, KeyListener {
         vista.requestFocusInWindow();
     }
 
+    /**
+     * Actualiza la lógica del juego en cada ciclo del timer.
+     * Maneja el movimiento de obstáculos, gravedad, colisiones y puntuación.
+     * 
+     * @param e el evento de acción del timer
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!modelo.enJuego)
@@ -60,6 +88,10 @@ public class MotorJuego implements ActionListener, KeyListener {
         vista.panelJuego.actualizar(modelo);
     }
 
+    /**
+     * Finaliza la partida actual.
+     * Detiene el timer, muestra un cuadro de diálogo con la puntuación y vuelve al menú.
+     */
     private void finalizarJuego() {
         timer.stop();
         modelo.enJuego = false;
@@ -67,6 +99,12 @@ public class MotorJuego implements ActionListener, KeyListener {
         vista.tarjetas.show(vista.contenedor, "MENU");
     }
 
+    /**
+     * Maneja el evento de tecla presionada.
+     * Permite que el jugador salte cuando presiona la barra espaciadora.
+     * 
+     * @param e el evento de teclado
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE && modelo.personajeY >= 300) {
@@ -74,9 +112,19 @@ public class MotorJuego implements ActionListener, KeyListener {
         }
     }
 
+    /**
+     * Maneja el evento de tecla liberada.
+     * 
+     * @param e el evento de teclado
+     */
     @Override
     public void keyReleased(KeyEvent e) {}
 
+    /**
+     * Maneja el evento de tecla tiprada.
+     * 
+     * @param e el evento de teclado
+     */
     @Override
     public void keyTyped(KeyEvent e) {}
 }

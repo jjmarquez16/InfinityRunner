@@ -8,16 +8,33 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
+/**
+ * Panel encargado de renderizar la vista del juego.
+ * Dibuja el fondo, el personaje, los obstáculos y la interfaz de Usuario.
+ * 
+ * @author Equipo de Desarrollo
+ * @version 1.0
+ */
 public class PanelJuego extends JPanel {
+    /** Referencia al modelo de datos */
     private Modelo modelo;
+    /** Imagen del personaje principal (tortuga) */
     private BufferedImage imgProtagonista;
 
+    /**
+     * Constructor del panel de juego.
+     * Inicializa el fondo verde neón y carga los recursos necesarios.
+     */
     public PanelJuego() {
         // Fondo Verde Neón llamativo
         setBackground(new Color(57, 255, 20)); 
         cargarRecursos();
     }
 
+    /**
+     * Carga los recursos gráficos del juego.
+     * Intenta cargar la imagen del protagonista desde los recursos de la aplicación.
+     */
     private void cargarRecursos() {
         try {
             // Cargamos la imagen de la tortuga (Protagonista.png)
@@ -27,6 +44,14 @@ public class PanelJuego extends JPanel {
         }
     }
 
+    /**
+     * Intenta cargar una imagen desde múltiples ubicaciones.
+     * Primero intenta desde los recursos de la aplicación, luego desde el sistema de archivos.
+     * 
+     * @param pathRecurso la ruta del recurso dentro de la aplicación
+     * @param pathArchivo la ruta del archivo en el sistema de archivos
+     * @return la imagen cargada o null si no se encuentra
+     */
     private BufferedImage intentarCargar(String pathRecurso, String pathArchivo) {
         try {
             URL url = getClass().getResource(pathRecurso);
@@ -37,11 +62,22 @@ public class PanelJuego extends JPanel {
         return null;
     }
 
+    /**
+     * Actualiza el panel con el modelo actual y lo redibuja.
+     * 
+     * @param modelo el modelo de datos actual
+     */
     public void actualizar(Modelo modelo) {
         this.modelo = modelo;
         repaint();
     }
 
+    /**
+     * Dibuja los componentes del juego en el panel.
+     * Incluye el fondo, el personaje, los obstáculos y la interfaz de usuario.
+     * 
+     * @param g el contexto gráfico
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Esto pintará el fondo Verde Neón
