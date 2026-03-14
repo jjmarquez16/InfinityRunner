@@ -2,13 +2,15 @@ package controller;
 
 import javax.swing.*;
 import java.awt.event.*;
+import model.Modelo;
+import view.VentanaPrincipal;
 
 public class MotorJuego implements ActionListener, KeyListener {
     private Modelo modelo;
-    private VistaPrincipal vista;
+    private VentanaPrincipal vista;
     private Timer timer;
 
-    public MotorJuego(Modelo modelo, VistaPrincipal vista) {
+    public MotorJuego(Modelo modelo, VentanaPrincipal vista) {
         this.modelo = modelo;
         this.vista = vista;
         this.timer = new Timer(20, this);
@@ -46,7 +48,7 @@ public class MotorJuego implements ActionListener, KeyListener {
             modelo.personajeY += 5;
 
         // Colisión
-        if (modelo.obstaculoX < 90 && modelo.obstaculoX > 50 && modelo.personajeY > 270) {
+        if (modelo.obstaculoX < 90 && modelo.obstaculoX > 50 && (modelo.personajeY + 50) > 300) {
             finalizarJuego();
         }
 
@@ -63,14 +65,13 @@ public class MotorJuego implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE && modelo.personajeY >= 300) {
-            modelo.personajeY -= 100; // Salto instantáneo
+            modelo.personajeY -= 150; // Salto
         }
     }
 
-    // Resto de métodos KeyListener vacíos...
-    public void keyReleased(KeyEvent e) {
-    }
+    @Override
+    public void keyReleased(KeyEvent e) {}
 
-    public void keyTyped(KeyEvent e) {
-    }
+    @Override
+    public void keyTyped(KeyEvent e) {}
 }
